@@ -13,8 +13,8 @@ export default function Dashboard() {
             {/*  might actually have to come from database to show the info stored in that day? */}
             <GetDate />
             {/* need to get these values from user info (to track weeklies and daily goal) and daily food */}
-            <PointDisplay usedPoints={13} dailyGoal={25} weeklyRemaining={33}/>
-            <ItemList foodList={dailyFoodList} setFoodList={setDailyFoodList}/>
+            <PointDisplay usedPoints={18} dailyGoal={25} weeklyRemaining={33}/>
+            <ItemList dailyFoodList={dailyFoodList} setDailyFoodList={setDailyFoodList}/>
         </div>
     );
 }
