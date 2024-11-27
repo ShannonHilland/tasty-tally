@@ -1,10 +1,13 @@
 import Navbar from "../components/Navbar";
+import ProfileForm from "./ProfileForm";
+import userData from "./user_data";
 
 export default function Profile() {
+    const user = userData;
     return (
         <div>
             <Navbar />
-            <h1>Profile</h1>
+            <ProfileForm user={user}/>
         </div>
     );
 }

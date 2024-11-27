@@ -1,24 +1,26 @@
 "use client";
 import {useState} from "react";
 export default function AddItemForm({food, setDailyFoodList, setQuery}) {
-    const [quantity, setQuantity] = useState(1);
+    const [quantity, setQuantity] = useState();
     const [mealCategory, setMealCategory] = useState("Breakfast");
     const handleSubmit = (e) => {
         e.preventDefault();
-        const item = {
-            id: food.id,
-            name: food.name,
-            points: food.points,
-            calories: food.calories,
-            saturatedFat: food.saturatedFat,
-            sugar: food.sugar,
-            protein: food.protein,
-            servingSize: food.servingSize,
-            quantity: quantity,
-            mealCategory: mealCategory
-        }
+        if(quantity != undefined && quantity > 0) {
+            const item = {
+                id: food.id,
+                name: food.name,
+                points: food.points,
+                calories: food.calories,
+                saturatedFat: food.saturatedFat,
+                sugar: food.sugar,
+                protein: food.protein,
+                servingSize: food.servingSize,
+                quantity: quantity,
+                mealCategory: mealCategory
+            }  
         setDailyFoodList((prev) => [...prev, item]);
         setQuery("");
+        }
     }
     const handleQuantityChange = (e) => {
         const value = Math.max(1, Number(e.target.value));

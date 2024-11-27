@@ -1,0 +1,10 @@
+{
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "email": "Jane@example.com",
+    "gender": "female",
+    "height": 174,
+    "weight": 70,
+    "activityLevel": "Moderately Active",
+    "dailyGoal": 24
+}

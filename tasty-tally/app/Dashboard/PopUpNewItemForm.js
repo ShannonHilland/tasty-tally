@@ -34,12 +34,12 @@ export default function PopupForm({ closePopup }) {
 
             {/* Popup Form */}
             <div className="fixed inset-0 flex items-center justify-center z-50">
-                <div className="bg-white p-6 rounded shadow-lg w-10/12 max-w-md relative">
-                    <h2 className="text-xl font-bold mb-4">Add A New Food</h2>
+                <div className="bg-base-200 p-6 rounded shadow-lg w-10/12 max-w-md relative">
+                    <h2 className="text-xl text-primary font-bold mb-4">Add A New Food</h2>
                     <form onSubmit={handleSubmit}>
                         {/* Name */}
                         <div className="mb-4">
-                            <label htmlFor="name" className="block text-gray-700">
+                            <label htmlFor="name" className="block text-primary pb-1">
                                 Name
                             </label>
                             <input
@@ -48,13 +48,13 @@ export default function PopupForm({ closePopup }) {
                                 placeholder="Enter food name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                className="w-full border border-gray-300 rounded p-2"
+                                className="w-full bg-base-100  border border-gray-300 rounded p-2"
                                 required
                             />
                         </div>
                         {/* Calories */}
                         <div className="mb-4">
-                            <label htmlFor="calories" className="block text-gray-700">
+                            <label htmlFor="calories" className="block text-primary pb-1">
                                 Calories
                             </label>
                             <input
@@ -63,13 +63,13 @@ export default function PopupForm({ closePopup }) {
                                 placeholder="0"
                                 value={formData.calories}
                                 onChange={handleChange}
-                                className="w-full border border-gray-300 rounded p-2"
+                                className="w-full bg-base-100 border border-gray-300 rounded p-2"
                                 required
                             />
                         </div>
                         {/* Saturated Fat */}
                         <div className="mb-4">
-                            <label htmlFor="saturatedFat" className="block text-gray-700">
+                            <label htmlFor="saturatedFat" className="block text-primary pb-1">
                                 Saturated Fat (g)
                             </label>
                             <input
@@ -78,13 +78,13 @@ export default function PopupForm({ closePopup }) {
                                 placeholder="0"
                                 value={formData.saturatedFat}
                                 onChange={handleChange}
-                                className="w-full border border-gray-300 rounded p-2"
+                                className="w-full bg-base-100 border border-gray-300 rounded p-2"
                                 required
                             />
                         </div>
                         {/* Sugar */}
                         <div className="mb-4">
-                            <label htmlFor="sugar" className="block text-gray-700">
+                            <label htmlFor="sugar" className="block text-primary pb-1">
                                 Sugar (g)
                             </label>
                             <input
@@ -93,13 +93,13 @@ export default function PopupForm({ closePopup }) {
                                 placeholder="0"
                                 value={formData.sugar}
                                 onChange={handleChange}
-                                className="w-full border border-gray-300 rounded p-2"
+                                className="w-full bg-base-100 border border-gray-300 rounded p-2"
                                 required
                             />
                         </div>
                         {/* Protein */}
                         <div className="mb-4">
-                            <label htmlFor="protein" className="block text-gray-700">
+                            <label htmlFor="protein" className="block text-primary pb-1">
                                 Protein (g)
                             </label>
                             <input
@@ -108,13 +108,13 @@ export default function PopupForm({ closePopup }) {
                                 placeholder="0"
                                 value={formData.protein}
                                 onChange={handleChange}
-                                className="w-full border border-gray-300 rounded p-2"
+                                className="w-full bg-base-100 border border-gray-300 rounded p-2"
                                 required
                             />
                         </div>
                         {/* Serving Size */}
                         <div className="mb-6">
-                            <label htmlFor="servingSize" className="block text-gray-700">
+                            <label htmlFor="servingSize" className="block text-primary pb-1">
                                 Serving Size (g)
                             </label>
                             <input
@@ -123,7 +123,7 @@ export default function PopupForm({ closePopup }) {
                                 placeholder="0"
                                 value={formData.servingSize}
                                 onChange={handleChange}
-                                className="w-full border border-gray-300 rounded p-2"
+                                className="w-full bg-base-100 border border-gray-300 rounded p-2"
                                 required
                             />
                         </div>
@@ -132,13 +132,13 @@ export default function PopupForm({ closePopup }) {
                             <button
                                 type="button"
                                 onClick={closePopup}
-                                className="border-2 border-primary text-black px-4 py-2 rounded mr-2"
+                                className="border-2 border-primary text-primary  px-4 py-2 rounded mr-2"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                className="bg-primary text-white px-4 py-2 rounded"
+                                className="bg-primary text-base-100  px-4 py-2 rounded"
                             >
                                 Submit
                             </button>
