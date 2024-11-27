@@ -12,7 +12,7 @@ export default function ProfileForm({user}) {
         activityLevel: user.activityLevel,
         dailyGoal: user.dailyGoal
     });
-
+    const heading = `${formData.firstName}'s Profile`;
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -28,7 +28,7 @@ export default function ProfileForm({user}) {
     };
     return (
     <div className="bg-base-100 p-6 max-w-md relative">
-        <h2 className="text-xl text-primary font-bold mb-4">{formData.firstName}'s Profile</h2>
+        <h2 className="text-xl text-primary font-bold mb-4">{heading}</h2>
         <form onSubmit={handleSubmit}>
             {/* First Name Input */}
             <div className="mb-4">
