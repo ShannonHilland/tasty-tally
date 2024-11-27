@@ -18,13 +18,23 @@ export default function SearchBar({setDailyFoodList, openPopup}) {
     
     return(
         <div className="m-2 p-2">
-            <input
-                type="text"
-                placeholder="Search to add a food item..."
-                className="border-2 border-gray-300 p-2 rounded-lg w-full"
-                value={query}
-                onChange={handleInputChange}
-            />
+            <div className="relative">
+                    <input
+                        type="text"
+                        placeholder="Search for a food item..."
+                        className="input input-bordered input-primary p-2 rounded-lg w-full pr-10"
+                        value={query}
+                        onChange={handleInputChange}
+                    />
+                    {query && (
+                        <button
+                            onClick={() => setQuery("")}
+                            className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-primary focus:outline-none"
+                        >
+                            ✕
+                        </button>
+                    )}
+                </div>
             {query && filteredItems.length === 0 && (
                 <div className="text-center font-semibold mt-2">
                     No results found. <button className="text-md font-semibold  border-2 border-primary  p-1 px-3 mx-2 rounded-xl " onClick={openPopup}>Add new food item</button>
