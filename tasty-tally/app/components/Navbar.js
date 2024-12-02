@@ -1,9 +1,22 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import {useRouter} from "next/navigation";
+import { useUserAuth } from "../_utils/auth-context";
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const router = useRouter();
+    const { firebaseSignOut } = useUserAuth();
+
+    const handleSignOut = async () => {
+        try {
+            await firebaseSignOut(); 
+            router.push("/"); 
+        } catch (error) {
+            console.error("Error signing out:", error);
+        }
+    };
 
     return (
         <div className="navbar bg-base-200 relative">
@@ -24,7 +37,7 @@ export default function Navbar() {
                     <Link href="/Profile" className="btn btn-ghost">
                         Profile
                     </Link>
-                    <button className="btn btn-ghost">Sign Out</button>
+                    <button className="btn btn-ghost" onClick={handleSignOut}>Sign Out</button>
                 </div>
 
                 {/* smaller screens-> hamburger */}
@@ -75,7 +88,7 @@ export default function Navbar() {
                                         </Link>
                                     </li>
                                     <li>
-                                        <button onClick={() => setIsMenuOpen(false)}>
+                                        <button onClick={() => {setIsMenuOpen(false); handleSignOut();}}>
                                             Sign Out
                                         </button>
                                     </li>

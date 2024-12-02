@@ -1,13 +1,29 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "../components/Navbar";
 import ProfileForm from "./ProfileForm";
-import userData from "./user_data";
+import { useUserAuth } from "../_utils/auth-context";
 
 export default function Profile() {
-    const user = userData;
+    const { user } = useUserAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!user) {
+            router.push("/");
+        }
+    }, [user, router]);
+
+    if (!user) {
+        return null;
+    }
+
     return (
         <div>
             <Navbar />
-            <ProfileForm user={user}/>
+            <ProfileForm user={user} />
         </div>
     );
 }

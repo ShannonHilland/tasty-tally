@@ -1,7 +1,7 @@
 "use client";
 import {useState} from "react";
 export default function AddItemForm({food, setDailyFoodList, setQuery}) {
-    const [quantity, setQuantity] = useState();
+    const [quantity, setQuantity] = useState("");
     const [mealCategory, setMealCategory] = useState("Breakfast");
     const handleSubmit = (e) => {
         e.preventDefault();
