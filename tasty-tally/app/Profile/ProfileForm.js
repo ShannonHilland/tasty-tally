@@ -1,167 +1,205 @@
-"use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { doc, setDoc, getDoc } from "firebase/firestore"; // Added getDoc
+import { db } from "../_utils/firebase";
 
-export default function ProfileForm({user}) {
-    const [formData, setFormData] = useState({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        gender: user.gender,
-        height: user.height,
-        weight: user.weight,
-        activityLevel: user.activityLevel,
-        dailyGoal: user.dailyGoal
-    });
-    const heading = `${formData.firstName}'s Profile`;
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
+export default function ProfileForm({ user }) {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    gender: "male",
+    height: "",
+    weight: "",
+    activityLevel: "",
+    goalWeight: "",
+    dailyGoal: "",
+  });
+
+  // Fetch user profile data
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const userDoc = await getDoc(doc(db, "Users", user.uid));
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          setFormData((prev) => ({
             ...prev,
-            [name]: value,
-        }));
+            ...data, // Populate form with data from Firestore
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Form submitted:", formData);
-        // Add DB logic here to submit the form data
-    };
-    return (
-        <div className="flex items-center justify-center bg-base-100">
-            <div className="bg-base-100 p-6 w-full max-w-lg relative">
-                <h2 className="text-xl text-primary font-bold mb-4">
-                    {heading}
-                </h2>
-                <form onSubmit={handleSubmit}>
-                    {/* First Name Input */}
-                    <div className="mb-4">
-                        <label htmlFor="firstName" className="block text-primary pb-1">
-                            First Name
-                        </label>
-                        <input
-                            type="text"
-                            name="firstName"
-                            value={formData.firstName}
-                            onChange={handleChange}
-                            className="w-full bg-base-100 border border-gray-300 rounded p-2"
-                            required
-                        />
-                    </div>
+    fetchProfileData();
+  }, [user.uid]);
 
-                    {/* Last Name Input */}
-                    <div className="mb-4">
-                        <label htmlFor="lastName" className="block text-primary pb-1">
-                            Last Name
-                        </label>
-                        <input
-                            type="text"
-                            name="lastName"
-                            value={formData.lastName}
-                            onChange={handleChange}
-                            className="w-full bg-base-100 border border-gray-300 rounded p-2"
-                            required
-                        />
-                    </div>
+  const calculateDailyGoal = (weight, height, age, gender, activityLevel) => {
+    let base = weight / 4.2;
+    if (gender === "male") base += 8;
 
-                    {/* Email Input */}
-                    <div className="mb-4">
-                        <label htmlFor="email" className="block text-primary pb-1">
-                            Email
-                        </label>
-                        <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            className="w-full bg-base-100 border border-gray-300 rounded p-2"
-                            required
-                        />
-                    </div>
+    switch (age) {
+      case "18-26": base += 5; break;
+      case "27-37": base += 3; break;
+      case "38-49": base += 2; break;
+      case "50+": base += 1; break;
+    }
 
-                    {/* Gender Input */}
-                    <div className="mb-4">
-                        <label htmlFor="gender" className="block text-primary pb-1">
-                            Gender
-                        </label>
-                        <input
-                            type="text"
-                            name="gender"
-                            value={formData.gender}
-                            onChange={handleChange}
-                            className="w-full bg-base-100 border border-gray-300 rounded p-2"
-                            required
-                        />
-                    </div>
+    if (height >= 179) base += 2;
 
-                    {/* Height Input */}
-                    <div className="mb-4">
-                        <label htmlFor="height" className="block text-primary pb-1">
-                            Height (cm)
-                        </label>
-                        <input
-                            type="number"
-                            name="height"
-                            value={formData.height}
-                            onChange={handleChange}
-                            className="w-full bg-base-100 border border-gray-300 rounded p-2"
-                            required
-                        />
-                    </div>
+    switch (activityLevel) {
+      case "inactive": base += 0; break;
+      case "light": base += 1; break;
+      case "moderate": base += 2; break;
+      case "heavy": base += 3; break;
+    }
 
-                    {/* Weight Input */}
-                    <div className="mb-4">
-                        <label htmlFor="weight" className="block text-primary pb-1">
-                            Weight (kg)
-                        </label>
-                        <input
-                            type="number"
-                            name="weight"
-                            value={formData.weight}
-                            onChange={handleChange}
-                            className="w-full bg-base-100 border border-gray-300 rounded p-2"
-                            required
-                        />
-                    </div>
+    return Math.round(base);
+  };
 
-                    <div className="mb-4">
-                        <label htmlFor="activityLevel" className="block text-primary pb-1">
-                            Activity Level
-                        </label>
-                        <select
-                            name="activityLevel"
-                            value={formData.activityLevel}
-                            onChange={handleChange}
-                            className="w-full bg-base-100 border border-gray-300 rounded p-2"
-                            required
-                        >
-                            <option value="Sedentary">Sedentary</option>
-                            <option value="Lightly Active">Lightly Active</option>
-                            <option value="Moderately Active">Moderately Active</option>
-                            <option value="Very Active">Very Active</option>
-                        </select>
-                    </div>
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-                    {/* Daily Goal Display */}
-                    <div className="mb-5">
-                        <label className="block text-primary pb-1">
-                            Daily Goal 
-                        </label>
-                        <p className="w-full bg-base-100 border border-gray-300 rounded p-2">
-                            {formData.dailyGoal}
-                        </p>
-                    </div>
-
-                    {/* Submit Button */}
-                    <div className="flex justify-end">
-                        <button
-                            type="submit"
-                            className="bg-primary text-base-100 px-4 py-2 rounded"
-                        >
-                            Save
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const dailyGoal = calculateDailyGoal(
+      parseFloat(formData.weight),
+      parseFloat(formData.height),
+      formData.age,
+      formData.gender,
+      formData.activityLevel
     );
+
+    const profileData = {
+      ...formData,
+      email: user.email,
+      dailyGoal,
+    };
+
+    try {
+      await setDoc(doc(db, "Users", user.uid), profileData, { merge: true });
+      alert("Profile saved successfully!");
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      alert("Failed to save profile. Please try again.");
+    }
+  };
+
+  return (
+    <div className="m-5 md:m-2">
+      <h1 className="text-center text-primary text-3xl font-bold mb-8">
+        {formData.firstName ? `${formData.firstName}'s Profile` : "Profile Setup"}
+      </h1>
+      
+      <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-3">
+        <div className="mb-4">
+          <label className="block text-sm font-medium">First Name</label>
+          <input
+            type="text"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            className="w-full p-2 border border-primary rounded text-primary"
+            required
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium">Last Name</label>
+          <input
+            type="text"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            className="w-full p-2 border border-primary rounded text-primary"
+            required
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium">Gender</label>
+          <select
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            className="w-full p-2 border border-primary rounded text-primary"
+          >
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium">Height (cm)</label>
+          <input
+            type="number"
+            name="height"
+            value={formData.height}
+            onChange={handleChange}
+            className="w-full p-2 border border-primary rounded text-primary"
+            required
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium">Weight (kg)</label>
+          <input
+            type="number"
+            name="weight"
+            value={formData.weight}
+            onChange={handleChange}
+            className="w-full p-2 border border-primary rounded text-primary"
+            required
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium">Activity Level</label>
+          <select
+            name="activityLevel"
+            value={formData.activityLevel}
+            onChange={handleChange}
+            className="w-full p-2 border border-primary rounded text-primary"
+          >
+            <option value="inactive">Inactive/Sedentary</option>
+            <option value="light">Light Activity</option>
+            <option value="moderate">Moderate Exercise</option>
+            <option value="heavy">Heavy Exercise</option>
+          </select>
+        </div>
+
+        <div className="mb-4 ">
+          <label className="block text-sm font-medium">Goal Weight (kg)</label>
+          <input
+            type="number"
+            name="goalWeight"
+            value={formData.goalWeight}
+            onChange={handleChange}
+            className="w-full p-2 border border-primary rounded text-primary"
+            required
+          />
+        </div>
+
+        <div className="mb-4">
+          <div className="block text-md font-medium">Daily Goal: 
+            <span className="text-primary text-md font-semibold pl-1">
+              {Math.round(formData.dailyGoal)}
+            </span>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-primary text-white py-2 px-4 rounded my-2"
+        >
+          Save Profile
+        </button>
+      </form>
+    </div>
+  );
 }

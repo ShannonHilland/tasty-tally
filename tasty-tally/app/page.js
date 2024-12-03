@@ -1,28 +1,81 @@
 "use client";
 import { useUserAuth } from "./_utils/auth-context";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "./_utils/firebase";
 
 export default function SignInPage() {
   const { user, googleSignIn } = useUserAuth();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-  // Redirect to dashboard after successful sign-in
+  // Helper to check if profile is complete
+  const isProfileComplete = (profile) => {
+    const requiredFields = [
+      "firstName",
+      "lastName",
+      "email",
+      "gender",
+      "height",
+      "weight",
+      "activityLevel",
+      "goalWeight",
+      "dailyGoal",
+    ];
+    return requiredFields.every((field) => profile[field]);
+  };
+
   useEffect(() => {
-    if (user) {
-      router.push("/Dashboard"); // Use your actual dashboard route here
-    }
+    const checkProfile = async () => {
+      if (user) {
+        setLoading(true);
+        try {
+          const userRef = doc(db, "Users", user.uid);
+          const userDoc = await getDoc(userRef);
+
+          if (userDoc.exists()) {
+            const profile = userDoc.data();
+            if (isProfileComplete(profile)) {
+              router.push("/Dashboard"); // Redirect to dashboard if profile is complete
+            } else {
+              router.push("/Profile"); // Redirect to profile setup if incomplete
+            }
+          } else {
+            // Create a user document if it doesn't exist
+            await setDoc(userRef, {
+              email: user.email,
+            });
+            router.push("/Profile");
+          }
+        } catch (error) {
+          console.error("Error checking user profile:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    checkProfile();
   }, [user, router]);
 
+  if (loading) {
+    return (
+      <main className="flex items-center justify-center h-screen bg-base-200">
+        <div className="text-center">Loading...</div>
+      </main>
+    );
+  }
+
   return (
-    <main className="flex items-center justify-center h-screen bg-base-200 ">
+    <main className="flex items-center justify-center h-screen bg-base-200">
       <div className="flex flex-col pb-20 w-9/12 bg-base-100 text-center rounded-lg shadow-lg max-w-96">
         <img
-            src="favicon.ico"
-            alt="TastyTally Logo"
-            className="w-24 h-24 mt-32 mx-auto"
+          src="favicon.ico"
+          alt="TastyTally Logo"
+          className="w-24 h-24 mt-32 mx-auto"
         />
-        <h1 className="text-xl font-semibold text-accent-content m-5">Tasty Tally Sign-In</h1>
+        <h1 className="text-xl font-semibold m-5 text-primary">Tasty Tally Sign-In</h1>
         <div className="m-2">
           <button
             className="w-11/12 mx-auto bg-base-200 border-2 border-primary hover:bg-base-300 text-primary font-semibold px-4 py-2 rounded flex justify-center items-center gap-2"
