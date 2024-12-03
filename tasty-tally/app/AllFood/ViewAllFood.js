@@ -1,11 +1,23 @@
 "use client";
-import { useState } from "react";
-import foodList from "../Dashboard/foodList"; // Replace with actual food list import eventually -> query for entire list
+import { useState, useEffect } from "react";
+import { collection, onSnapshot } from "firebase/firestore"; 
+import { db } from "../_utils/firebase";
 
 export default function ViewAllFood() {
     const [query, setQuery] = useState("");
-    const [sortOption, setSortOption] = useState("default");
-    const foodItems = [...foodList];
+    const [sortOption, setSortOption] = useState("alphabetical"); 
+    const [foodItems, setFoodItems] = useState([]);
+
+    useEffect(() => {
+        const unsubscribe = onSnapshot(collection(db, "FoodList"), (snapshot) => {
+            const foodList = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setFoodItems(foodList);
+        });
+        return () => unsubscribe();
+    }, []);
 
     const handleInputChange = (e) => {
         setQuery(e.target.value);
@@ -18,16 +30,22 @@ export default function ViewAllFood() {
     // Filter/sort
     const filteredItems = foodItems
         .filter((item) => {
-            const matchesQuery = item.name.toLowerCase().includes(query.toLowerCase());
-            if (sortOption === "zero-points") {
-                return matchesQuery && item.points === 0;
-            }
-            return matchesQuery;
+            return item.name.toLowerCase().includes(query.toLowerCase());
         })
         .sort((a, b) => {
-            if (sortOption === "low-high") return a.points - b.points;
-            if (sortOption === "high-low") return b.points - a.points;
-            return 0;
+            if (sortOption === "low-high") {
+                return a.points - b.points;
+            }
+            if (sortOption === "high-low") {
+                return b.points - a.points;
+            }
+            if (sortOption === "zero-points") {
+                return a.points === 0 ? -1 : b.points === 0 ? 1 : 0;
+            }
+            if (sortOption === "alphabetical") {
+                return a.name.localeCompare(b.name); 
+            }
+            return 0; 
         });
 
     return (
@@ -57,7 +75,7 @@ export default function ViewAllFood() {
                         value={sortOption}
                         onChange={handleSortChange}
                     >
-                        <option value="default">Sort By</option>
+                        <option value="alphabetical">Sort By: Alphabetical</option>
                         <option value="low-high">Points: Low to High</option>
                         <option value="high-low">Points: High to Low</option>
                         <option value="zero-points">Zero Points</option>

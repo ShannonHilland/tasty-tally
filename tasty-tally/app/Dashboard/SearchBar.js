@@ -1,13 +1,22 @@
 "use client";
-import {useState} from "react"; 
-import foodList from './foodList';
+import {useState, useEffect} from "react"; 
+import { collection, onSnapshot } from "firebase/firestore"; 
+import { db } from "../_utils/firebase";
 import Item from './AddItemForm';
-// this is where the api food would be called, search through the available food
 
 export default function SearchBar({setDailyFoodList, openPopup}) {
     const [query, setQuery] = useState("");
-    const foodItems = [...foodList];
-
+    const [foodItems, setFoodItems] = useState([]);
+    useEffect(() => {
+        const unsubscribe = onSnapshot(collection(db, "FoodList"), (snapshot) => {
+            const foodList = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setFoodItems(foodList);
+        });
+        return () => unsubscribe();
+    }, []);
     const handleInputChange = (e) => {
         setQuery(e.target.value);
       };

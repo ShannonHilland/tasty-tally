@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { addFoodItem } from "../_utils/firestoreOperations";
+import { getDatabase, ref, push } from 'firebase/database';
 
 export default function PopupForm({ closePopup }) {
     const [formData, setFormData] = useState({
@@ -18,10 +20,20 @@ export default function PopupForm({ closePopup }) {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Form submitted:", formData);
-        // Add API logic here to submit the form data
+        
+        const pointValue = (parseFloat(formData.calories) * .0305) + (parseFloat(formData.saturatedFat) * .275) + (parseFloat(formData.sugar) * .12) - (parseFloat(formData.protein) * .098)
+        const db = getDatabase();
+        const newRef = push(ref(db, 'path/to/data'));
+        const id = newRef.key;
+
+        const foodItem = {
+            ...formData,
+            id: id,
+            points: Math.round(pointValue),
+        };
+        addFoodItem(foodItem);
         closePopup();
     };
 
@@ -29,7 +41,7 @@ export default function PopupForm({ closePopup }) {
         <div>
             <div
                 className="fixed inset-0 bg-black bg-opacity-50 z-40"
-                onClick={closePopup} // Clicking outside the form closes it
+                onClick={closePopup} 
             ></div>
 
             {/* Popup Form */}
