@@ -1,4 +1,5 @@
 "use client";
+
 import { useUserAuth } from "./_utils/auth-context";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,7 +11,6 @@ export default function SignInPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  // Helper to check if profile is complete
   const isProfileComplete = (profile) => {
     const requiredFields = [
       "firstName",
@@ -37,12 +37,11 @@ export default function SignInPage() {
           if (userDoc.exists()) {
             const profile = userDoc.data();
             if (isProfileComplete(profile)) {
-              router.push("/Dashboard"); // Redirect to dashboard if profile is complete
+              router.push("/Dashboard"); 
             } else {
-              router.push("/Profile"); // Redirect to profile setup if incomplete
+              router.push("/Profile"); 
             }
           } else {
-            // Create a user document if it doesn't exist
             await setDoc(userRef, {
               email: user.email,
             });

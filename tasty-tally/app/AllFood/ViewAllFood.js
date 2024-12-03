@@ -30,21 +30,16 @@ export default function ViewAllFood() {
     // Filter/sort
     const filteredItems = foodItems
         .filter((item) => {
-            return item.name.toLowerCase().includes(query.toLowerCase());
+            const matchesQuery = item.name.toLowerCase().includes(query.toLowerCase());
+            if (sortOption === "zero-points") {
+                return matchesQuery && item.points === 0;
+            }
+            return matchesQuery;
         })
         .sort((a, b) => {
-            if (sortOption === "low-high") {
-                return a.points - b.points;
-            }
-            if (sortOption === "high-low") {
-                return b.points - a.points;
-            }
-            if (sortOption === "zero-points") {
-                return a.points === 0 ? -1 : b.points === 0 ? 1 : 0;
-            }
-            if (sortOption === "alphabetical") {
-                return a.name.localeCompare(b.name); 
-            }
+            if (sortOption === "low-high") return a.points - b.points;
+            if (sortOption === "high-low") return b.points - a.points;
+            if (sortOption === "alphabetical") return a.name.localeCompare(b.name); 
             return 0; 
         });
 
@@ -75,7 +70,7 @@ export default function ViewAllFood() {
                         value={sortOption}
                         onChange={handleSortChange}
                     >
-                        <option value="alphabetical">Sort By: Alphabetical</option>
+                        <option value="alphabetical">Alphabetical</option>
                         <option value="low-high">Points: Low to High</option>
                         <option value="high-low">Points: High to Low</option>
                         <option value="zero-points">Zero Points</option>
