@@ -1,38 +1,60 @@
 "use client";
+
 import {useState} from "react";
-import foodList from './foodList';
 import SearchBar from './SearchBar';
 import DailyItem from './DailyItem';
 import PopupNewItemForm from './PopUpNewItemForm';
  
- export default function ItemList({dailyFoodList, setDailyFoodList}) {
+ export default function ItemList({dailyFoodList, setDailyFoodList, selectedDate}) {
     const [isVisible, setIsVisible] = useState(false);
     const openPopup = () => setIsVisible(true);
     const closePopup = () => setIsVisible(false);
+    const desiredOrder = ["Breakfast", "Lunch", "Dinner", "Snack"];
 
-    return(
-        <div className="m-4 p-2">   
-           <SearchBar setDailyFoodList={setDailyFoodList} openPopup={openPopup}/>
-           {isVisible && <PopupNewItemForm closePopup={closePopup}/>}
-           {dailyFoodList.map((food) => (
-                <DailyItem key={food.id} food={food} setDailyFoodList={setDailyFoodList}/>
+    const categorizedFood = dailyFoodList.reduce((acc, food) => {
+      const category = food.mealCategory || "Uncategorized"; 
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(food);
+      return acc;
+    }, {});
+
+    const orderedCategorizedFood = Object.keys(categorizedFood)
+      .sort((a, b) => {
+         const indexA = desiredOrder.indexOf(a);
+         const indexB = desiredOrder.indexOf(b);
+
+         // Categories not in the desiredOrder should come last and be sorted alphabetically
+         if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+         if (indexA === -1) return 1;
+         if (indexB === -1) return -1;
+
+         return indexA - indexB;
+      })
+      .reduce((acc, key) => {
+         acc[key] = categorizedFood[key];
+         return acc;
+      }, {});
+
+      return (
+         <div className="m-4 p-2">   
+           <SearchBar setDailyFoodList={setDailyFoodList} openPopup={openPopup} selectedDate={selectedDate}/>
+           {isVisible && <PopupNewItemForm closePopup={closePopup} />}
+           {Object.entries(orderedCategorizedFood).map(([category, foods]) => ( 
+             <div key={category} className="category-section mb-6">
+               <h2 className="text-lg font-bold mb-2 capitalize">{category}</h2>
+               {foods.map((food) => ( 
+                 <DailyItem
+                   key={food.id}
+                   food={food}
+                   setDailyFoodList={setDailyFoodList}
+                   selectedDate={selectedDate}
+                 />
+               ))}
+             </div>
            ))}
-            {/* access to api food for search bar,
-                search bar
-                ability to add to foodList (api values + quantity and meal to adjust points)
-                sorted items by reduce (meal) */}
-            {/* {jsonFood.map((food) => (
-                <div key={food.id} className="flex items-center justify-between p-2 border-b-2">
-                    <div className="flex items-center">
-                        <p className="text-lg font-semibold">{food.name}</p>
-                        <p className="text-sm text-gray-600">{food.points} Points</p>
-                    </div>
-                    <div className="flex items-center">
-                        <button className="bg-primary text-white p-1 rounded-lg">Add</button>
-                    </div>
-                </div>
-            ))} */}
-
-        </div>
-    );
+         </div>
+       );
+       
  }

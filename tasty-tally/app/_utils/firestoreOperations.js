@@ -1,5 +1,5 @@
-import { doc, setDoc, collection, addDoc, query, where, getDocs } from "firebase/firestore";
-import { db } from "./firebase";
+import { doc, setDoc, collection, addDoc, getDoc, updateDoc, arrayUnion, runTransaction } from "firebase/firestore";
+import { db, } from "./firebase";
 
 // Save user data
 export const saveUserData = async (user) => {
@@ -11,20 +11,30 @@ export const saveUserData = async (user) => {
   }
 };
 
-// Log food for a specific day
+// Add a food item to the daily log
 export const logFood = async (userId, date, food) => {
   try {
-    const logsRef = collection(db, "DailyLogs");
-    const dailyQuery = query(logsRef, where("userId", "==", userId), where("date", "==", date));
-    const snapshot = await getDocs(dailyQuery);
+    const dateId = date.toISOString().split("T")[0]; // Format date to YYYY-MM-DD
+    const logRef = doc(db, "Users", userId, "DailyLogs", dateId);
 
-    if (snapshot.empty) {
-      await addDoc(logsRef, { userId, date, foods: [food] });
+    const logSnap = await getDoc(logRef);
+
+    const points = food.points || 0;
+
+    if (logSnap.exists()) {
+      const currentPoints = logSnap.data().pointsUsed || 0;
+      await updateDoc(logRef, {
+        foods: arrayUnion(food),
+        pointsUsed: currentPoints + points,
+      });
     } else {
-      // Update existing log (you can expand this to include update logic)
+      await setDoc(logRef, {
+        foods: [food],
+        pointsUsed: points,
+      });
     }
   } catch (error) {
-    console.error("Error logging food: ", error);
+    console.error("Error logging food:", error);
   }
 };
 
@@ -35,5 +45,62 @@ export const addFoodItem = async (food) => {
     await addDoc(foodRef, food);
   } catch (error) {
     console.error("Error adding food item: ", error);
+  }
+};
+
+// Delete an existing food item from the log
+export const deleteFood = async (userId, date, food) => {
+  try {
+    const dateId = date.toISOString().split("T")[0];
+    const userDocRef = doc(db, "Users", userId, "DailyLogs", dateId);
+
+    await runTransaction(db, async (transaction) => {
+      const logSnap = await transaction.get(userDocRef);
+
+      if (!logSnap.exists()) {
+        throw new Error("Daily log does not exist.");
+      }
+
+      const logData = logSnap.data();
+      const updatedFoods = (logData.foods || []).filter(
+        (item) => item.id !== food.id
+      );
+      const updatedPointsUsed = (logData.pointsUsed || 0) - (food.points || 0);
+
+      transaction.update(userDocRef, {
+        foods: updatedFoods,
+        pointsUsed: Math.max(0, updatedPointsUsed),
+      });
+    });
+  } catch (error) {
+    console.error("Error deleting food:", error);
+  }
+};
+
+export const fetchDailyLog = async (userId, date) => {
+  try {
+    const dateId = date.toISOString().split("T")[0]; // Format date to YYYY-MM-DD
+    const logRef = doc(db, "Users", userId, "DailyLogs", dateId);
+    const logSnap = await getDoc(logRef);
+
+    if (logSnap.exists()) {
+      const logData = logSnap.data();
+      return {
+        foods: logData.foods || [],
+        pointsUsed: logData.pointsUsed || 0,
+      };
+    } else {
+      // If no log exists for the day, return default values
+      return {
+        foods: [],
+        pointsUsed: 0,
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching daily log:", error);
+    return {
+      foods: [],
+      pointsUsed: 0,
+    };
   }
 };

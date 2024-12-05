@@ -1,10 +1,11 @@
 "use client";
+
 import {useState, useEffect} from "react"; 
 import { collection, onSnapshot } from "firebase/firestore"; 
 import { db } from "../_utils/firebase";
 import Item from './AddItemForm';
 
-export default function SearchBar({setDailyFoodList, openPopup}) {
+export default function SearchBar({setDailyFoodList, openPopup, selectedDate}) {
     const [query, setQuery] = useState("");
     const [foodItems, setFoodItems] = useState([]);
     useEffect(() => {
@@ -17,9 +18,17 @@ export default function SearchBar({setDailyFoodList, openPopup}) {
         });
         return () => unsubscribe();
     }, []);
+
     const handleInputChange = (e) => {
         setQuery(e.target.value);
       };
+
+    const handleFocus = () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    };
     
     const filteredItems = foodItems.filter((item) =>
         item.name.toLowerCase().startsWith(query.toLowerCase())
@@ -34,6 +43,7 @@ export default function SearchBar({setDailyFoodList, openPopup}) {
                         className="input input-bordered input-primary p-2 rounded-lg w-full pr-10"
                         value={query}
                         onChange={handleInputChange}
+                        onFocus={handleFocus}
                     />
                     {query && (
                         <button
@@ -51,7 +61,7 @@ export default function SearchBar({setDailyFoodList, openPopup}) {
             )}
             {query && filteredItems.map((food) => (
                 <div key={food.id} className="flex items-center justify-between p-2 border-b-2">
-                    <Item food={food} setDailyFoodList={setDailyFoodList} setQuery={setQuery}/>
+                    <Item food={food} setDailyFoodList={setDailyFoodList} setQuery={setQuery} selectedDate={selectedDate}/>
                 </div>
             ))}
         </div>

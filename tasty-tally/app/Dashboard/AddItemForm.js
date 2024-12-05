@@ -1,15 +1,20 @@
 "use client";
 import {useState} from "react";
-export default function AddItemForm({food, setDailyFoodList, setQuery}) {
+import { logFood } from "../_utils/firestoreOperations";
+import { useUserAuth } from "../_utils/auth-context";
+
+export default function AddItemForm({food, setDailyFoodList, setQuery, selectedDate}) {
     const [quantity, setQuantity] = useState("");
     const [mealCategory, setMealCategory] = useState("Breakfast");
-    const handleSubmit = (e) => {
+    const { user } = useUserAuth();
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if(quantity != undefined && quantity > 0) {
             const item = {
                 id: food.id,
                 name: food.name,
-                points: food.points,
+                points: food.points * quantity,
                 calories: food.calories,
                 saturatedFat: food.saturatedFat,
                 sugar: food.sugar,
@@ -18,8 +23,12 @@ export default function AddItemForm({food, setDailyFoodList, setQuery}) {
                 quantity: quantity,
                 mealCategory: mealCategory
             }  
-        setDailyFoodList((prev) => [...prev, item]);
-        setQuery("");
+            await logFood(user.uid, selectedDate, item);
+            setQuery(""); 
+            setDailyFoodList((prev) => {
+                const updatedList = [...prev, item];
+                return updatedList;
+            });
         }
     }
     const handleQuantityChange = (e) => {

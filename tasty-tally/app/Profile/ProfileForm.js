@@ -13,6 +13,7 @@ export default function ProfileForm({ user }) {
     goalWeight: "",
     dailyGoal: "",
   });
+  const [pointGoal, setPointGoal] = useState(0);
 
   // Fetch user profile data
   useEffect(() => {
@@ -83,6 +84,7 @@ export default function ProfileForm({ user }) {
 
     try {
       await setDoc(doc(db, "Users", user.uid), profileData, { merge: true });
+      setPointGoal(dailyGoal);
       alert("Profile saved successfully!");
     } catch (error) {
       console.error("Error saving profile:", error);
@@ -188,7 +190,7 @@ export default function ProfileForm({ user }) {
         <div className="mb-4">
           <div className="block text-md font-medium">Daily Goal: 
             <span className="text-primary text-md font-semibold pl-1">
-              {Math.round(formData.dailyGoal)}
+              {Math.round(pointGoal)}
             </span>
           </div>
         </div>

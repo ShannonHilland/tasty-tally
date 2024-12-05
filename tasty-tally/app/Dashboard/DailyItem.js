@@ -1,8 +1,13 @@
+import { deleteFood } from "../_utils/firestoreOperations";
+import { useUserAuth } from "../_utils/auth-context";
 
-export default function DailyItem({food, setDailyFoodList}) {
-    const handleDelete = () => {
+export default function DailyItem({food, setDailyFoodList, selectedDate}) {
+    const { user } = useUserAuth();
+    
+    const handleDelete = async () => {
+        await deleteFood(user.uid, selectedDate, food);
         setDailyFoodList((prev) => prev.filter((item) => item !== food));
-    }
+      };
     return(
         <div className="collapse bg-base-200 m-1">
             <input type="checkbox" />

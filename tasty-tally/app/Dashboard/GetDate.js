@@ -1,15 +1,20 @@
-export default function GetDate() {
-    const newDate = new Date();
-    const date = newDate.getDate();
-    const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const month = monthName[newDate.getMonth()];
-    const year = newDate.getFullYear();
-    const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const day = weekday[newDate.getDay()];
-    
-    return(
-        <div className="m-1 p-1 text-lg text-center font-semibold">
-            <h1>{day}, {month} {date}, {year}</h1>
+export default function GetDate({ selectedDate, setSelectedDate }) {
+    const handleDateChange = (e) => {
+        setSelectedDate(new Date(e.target.value));
+    };
+
+    return (
+        <div className="flex date-picker m-4 justify-center">
+            <div className="flex items-center">
+                <label htmlFor="date" className="mr-2 text-lg font-semibold">Select Date:</label>
+                <input
+                    type="date"
+                    id="date"
+                    value={selectedDate.toISOString().split("T")[0]}
+                    onChange={handleDateChange}
+                    className="p-1 text-lg  font-semibold"
+                />
+            </div>
         </div>
     );
 }

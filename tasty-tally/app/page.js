@@ -33,7 +33,7 @@ export default function SignInPage() {
         try {
           const userRef = doc(db, "Users", user.uid);
           const userDoc = await getDoc(userRef);
-
+  
           if (userDoc.exists()) {
             const profile = userDoc.data();
             if (isProfileComplete(profile)) {
@@ -42,9 +42,18 @@ export default function SignInPage() {
               router.push("/Profile"); 
             }
           } else {
+            // Create the User document
             await setDoc(userRef, {
               email: user.email,
             });
+  
+            // Create a placeholder in the DailyLogs subcollection
+            const dailyLogRef = doc(db, "Users", user.uid, "DailyLogs", new Date().toISOString().split("T")[0]);
+            await setDoc(dailyLogRef, {
+              foods: [],
+              pointsUsed: 0,
+            });
+  
             router.push("/Profile");
           }
         } catch (error) {
@@ -54,9 +63,10 @@ export default function SignInPage() {
         }
       }
     };
-
+  
     checkProfile();
   }, [user, router]);
+  
 
   if (loading) {
     return (

@@ -12,6 +12,12 @@ export default function PopupForm({ closePopup }) {
         servingSize: "",
     });
 
+    const [isChecked, setIsChecked] = useState(false);
+
+    const handleCheckboxChange = () => {
+        setIsChecked(!isChecked);
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -22,9 +28,11 @@ export default function PopupForm({ closePopup }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        const pointValue = (parseFloat(formData.calories) * .0305) + (parseFloat(formData.saturatedFat) * .275) + (parseFloat(formData.sugar) * .12) - (parseFloat(formData.protein) * .098)
-        const db = getDatabase();
+        let pointValue = 0;
+        if(!isChecked) {
+            pointValue = (parseFloat(formData.calories) * .0305) + (parseFloat(formData.saturatedFat) * .275) + (parseFloat(formData.sugar) * .12) - (parseFloat(formData.protein) * .098)
+        }
+            const db = getDatabase();
         const newRef = push(ref(db, 'path/to/data'));
         const id = newRef.key;
 
@@ -125,7 +133,7 @@ export default function PopupForm({ closePopup }) {
                             />
                         </div>
                         {/* Serving Size */}
-                        <div className="mb-6">
+                        <div className="mb-4">
                             <label htmlFor="servingSize" className="block text-primary pb-1">
                                 Serving Size (g)
                             </label>
@@ -138,6 +146,13 @@ export default function PopupForm({ closePopup }) {
                                 className="w-full bg-base-100 border border-gray-300 rounded p-2"
                                 required
                             />
+                        </div>
+                        {/* Zero Point Option */}
+                        <div class="mb-4">
+                            <label class="label cursor-pointer">
+                                <span class="block text-primary pb-1">Zero Point Food?</span>
+                                <input type="checkbox" checked={isChecked} onClick={handleCheckboxChange} class="checkbox checkbox-primary" />
+                            </label>
                         </div>
                         {/* Submit and Cancel Buttons */}
                         <div className="flex justify-end">

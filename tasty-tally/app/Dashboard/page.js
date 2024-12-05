@@ -1,14 +1,17 @@
 "use client";
 import Navbar from "../components/Navbar";
 import PointDisplay from "./PointDisplay";
-import GetDate from "./GetDate";
 import ItemList from "./ItemList";
+import GetDate from "./GetDate";
 import {useState, useEffect} from "react";
 import { useRouter } from "next/navigation";
 import { useUserAuth } from "../_utils/auth-context";
+import { fetchDailyLog } from "../_utils/firestoreOperations";
 
 export default function Dashboard() {
     const [dailyFoodList, setDailyFoodList] = useState([]);
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [pointsUsed, setPointsUsed] = useState(0);
     const { user } = useUserAuth();
     const router = useRouter();
 
@@ -17,20 +20,32 @@ export default function Dashboard() {
             router.push("/");
         }
     }, [user, router]);
-    if (!user) {
-        return null;
-    }
+
+    useEffect(() => {
+        const fetchLog = async () => {
+          const logData = await fetchDailyLog(user.uid, selectedDate);
+          setPointsUsed(logData.pointsUsed);
+          setDailyFoodList(logData.foods);
+        };
+      
+        if (user) {
+          fetchLog();
+        }
+      }, [user, selectedDate]);
+
 
     return (
         <div>
             <Navbar />
-            {/*  might actually have to come from database to show the info stored in that day? */}
             <div className="flex justify-center">
-                <div className="md:w-8/12">
-                    <GetDate />
-                    {/* need to get these values from user info (to track weeklies and daily goal) and daily food */}
-                    <PointDisplay usedPoints={18} dailyGoal={25} weeklyRemaining={33}/>
-                    <ItemList dailyFoodList={dailyFoodList} setDailyFoodList={setDailyFoodList}/>
+                <div className="w-10/12 lg:w-8/12 ">
+                    <GetDate selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+                    <PointDisplay usedPoints={18} dailyGoal={25} weeklyRemaining={33} />
+                    <ItemList
+                        dailyFoodList={dailyFoodList}
+                        setDailyFoodList={setDailyFoodList} 
+                        selectedDate={selectedDate}
+                    />
                 </div>
             </div>
         </div>
