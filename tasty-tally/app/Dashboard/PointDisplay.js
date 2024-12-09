@@ -1,5 +1,5 @@
-//need to state life all points to keep track with added food
 export default function PointDisplay({usedPoints, dailyGoal, weeklyRemaining}) {
+    console.log("Rendering PointDisplay with usedPoints:", usedPoints);
     const remainingPoints = dailyGoal - usedPoints;
     const percent = usedPoints / dailyGoal * 100;
 

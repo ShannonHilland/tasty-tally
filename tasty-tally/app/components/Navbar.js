@@ -21,7 +21,7 @@ export default function Navbar() {
     return (
         <div className="navbar bg-base-200 relative">
             <div className="flex-1">
-                <a className="btn btn-ghost text-xl">TastyTally</a>
+                <Link href="/Dashboard" className="btn btn-ghost text-xl">TastyTally</Link>
             </div>
 
             {/* Navigation */}

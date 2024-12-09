@@ -6,7 +6,7 @@ import GetDate from "./GetDate";
 import {useState, useEffect} from "react";
 import { useRouter } from "next/navigation";
 import { useUserAuth } from "../_utils/auth-context";
-import { fetchDailyLog } from "../_utils/firestoreOperations";
+import { fetchDailyGoal, fetchDailyLog } from "../_utils/firestoreOperations";
 
 export default function Dashboard() {
     const [dailyFoodList, setDailyFoodList] = useState([]);
@@ -14,13 +14,16 @@ export default function Dashboard() {
     const [pointsUsed, setPointsUsed] = useState(0);
     const { user } = useUserAuth();
     const router = useRouter();
+    const [dailyGoal, setDailyGoal] = useState(0);
 
+    //I know this is a lot of userEffects, I didn't know how else to control updating specific parts of the UI depending on what's changing
     useEffect(() => {
         if (!user) {
             router.push("/");
         }
     }, [user, router]);
 
+    //display a new log when the date or user is changed
     useEffect(() => {
         const fetchLog = async () => {
           const logData = await fetchDailyLog(user.uid, selectedDate);
@@ -32,6 +35,29 @@ export default function Dashboard() {
           fetchLog();
         }
       }, [user, selectedDate]);
+      
+    //update PointDisplay component when the food list changes
+    useEffect(() => {
+      const fetchLog = async () => {
+        const logData = await fetchDailyLog(user.uid, selectedDate);
+        setPointsUsed(logData.pointsUsed);
+      };
+    
+      if (user) {
+        fetchLog();
+      }
+    }, [dailyFoodList]);
+
+    //fetch the daily goal when user logs in
+    useEffect(() => {
+      const fetchGoal = async () => {
+          const goal = await fetchDailyGoal(user.uid);
+          setDailyGoal(goal);
+      }
+      if (user) {
+          fetchGoal();
+      }
+    }, []);
 
 
     return (
@@ -40,7 +66,7 @@ export default function Dashboard() {
             <div className="flex justify-center">
                 <div className="w-10/12 lg:w-8/12 ">
                     <GetDate selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-                    <PointDisplay usedPoints={18} dailyGoal={25} weeklyRemaining={33} />
+                    <PointDisplay usedPoints={pointsUsed} dailyGoal={dailyGoal} weeklyRemaining={33} />
                     <ItemList
                         dailyFoodList={dailyFoodList}
                         setDailyFoodList={setDailyFoodList} 

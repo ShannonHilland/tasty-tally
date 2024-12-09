@@ -11,6 +11,16 @@ export const saveUserData = async (user) => {
   }
 };
 
+//Fetch daily goal
+export const fetchDailyGoal = async (userId) => {
+  const userDoc = await getDoc(doc(db, "Users", userId));
+  if (userDoc.exists()) {
+      const data = userDoc.data();
+      return data.dailyGoal;
+  } 
+      return 0;
+}
+
 // Add a food item to the daily log
 export const logFood = async (userId, date, food) => {
   try {
