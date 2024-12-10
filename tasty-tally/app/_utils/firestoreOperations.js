@@ -24,12 +24,13 @@ export const fetchDailyGoal = async (userId) => {
 // Add a food item to the daily log
 export const logFood = async (userId, date, food) => {
   try {
-    const dateId = date.toISOString().split("T")[0]; // Format date to YYYY-MM-DD
+    const dateId = date.toISOString().split("T")[0]; 
     const logRef = doc(db, "Users", userId, "DailyLogs", dateId);
 
     const logSnap = await getDoc(logRef);
 
     const points = food.points || 0;
+    const dailyGoal = await fetchDailyGoal(userId);
 
     if (logSnap.exists()) {
       const currentPoints = logSnap.data().pointsUsed || 0;
@@ -41,6 +42,7 @@ export const logFood = async (userId, date, food) => {
       await setDoc(logRef, {
         foods: [food],
         pointsUsed: points,
+        dailyGoal: dailyGoal,
       });
     }
   } catch (error) {
@@ -88,6 +90,7 @@ export const deleteFood = async (userId, date, food) => {
 };
 
 export const fetchDailyLog = async (userId, date) => {
+  const dailyGoal = await fetchDailyGoal(userId);
   try {
     const dateId = date.toISOString().split("T")[0]; // Format date to YYYY-MM-DD
     const logRef = doc(db, "Users", userId, "DailyLogs", dateId);
@@ -98,12 +101,14 @@ export const fetchDailyLog = async (userId, date) => {
       return {
         foods: logData.foods || [],
         pointsUsed: logData.pointsUsed || 0,
+        dailyGoal: logData.dailyGoal || dailyGoal
       };
     } else {
       // If no log exists for the day, return default values
       return {
         foods: [],
         pointsUsed: 0,
+        dailyGoal: dailyGoal
       };
     }
   } catch (error) {
@@ -111,6 +116,7 @@ export const fetchDailyLog = async (userId, date) => {
     return {
       foods: [],
       pointsUsed: 0,
+      dailyGoal: dailyGoal
     };
   }
 };

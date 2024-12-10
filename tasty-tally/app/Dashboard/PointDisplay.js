@@ -1,4 +1,4 @@
-export default function PointDisplay({usedPoints, dailyGoal, weeklyRemaining}) {
+export default function PointDisplay({usedPoints, dailyGoal}) {
     console.log("Rendering PointDisplay with usedPoints:", usedPoints);
     const remainingPoints = dailyGoal - usedPoints;
     const percent = usedPoints / dailyGoal * 100;
@@ -7,8 +7,8 @@ export default function PointDisplay({usedPoints, dailyGoal, weeklyRemaining}) {
         <div className="flex items-center justify-around w-full p-4 "> 
             {/* Weekly Remaining Section */}
             <div className="flex flex-col items-center">
-                <p className="text-lg font-semibold">{weeklyRemaining}</p>
-                <p className="text-sm text-gray-600">Weeklies Left</p>
+                <p className="text-lg font-semibold">{dailyGoal}</p>
+                <p className="text-sm text-gray-600">Today&apos;s Goal</p>
             </div>
 
             {/* Progress Bar Section */}

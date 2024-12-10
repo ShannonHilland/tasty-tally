@@ -32,7 +32,7 @@ export default function PopupForm({ closePopup }) {
         if(!isChecked) {
             pointValue = (parseFloat(formData.calories) * .0305) + (parseFloat(formData.saturatedFat) * .275) + (parseFloat(formData.sugar) * .12) - (parseFloat(formData.protein) * .098)
         }
-            const db = getDatabase();
+        const db = getDatabase();
         const newRef = push(ref(db, 'path/to/data'));
         const id = newRef.key;
 
@@ -135,12 +135,12 @@ export default function PopupForm({ closePopup }) {
                         {/* Serving Size */}
                         <div className="mb-4">
                             <label htmlFor="servingSize" className="block text-primary pb-1">
-                                Serving Size (g)
+                                Serving Size
                             </label>
                             <input
                                 type="text"
                                 name="servingSize"
-                                placeholder="0"
+                                placeholder="1 cup, 1 tbsp, 100g..."
                                 value={formData.servingSize}
                                 onChange={handleChange}
                                 className="w-full bg-base-100 border border-gray-300 rounded p-2"
@@ -149,9 +149,9 @@ export default function PopupForm({ closePopup }) {
                         </div>
                         {/* Zero Point Option */}
                         <div class="mb-4">
-                            <label class="label cursor-pointer">
-                                <span class="block text-primary pb-1">Zero Point Food?</span>
-                                <input type="checkbox" checked={isChecked} onClick={handleCheckboxChange} class="checkbox checkbox-primary" />
+                            <label className="label cursor-pointer">
+                                <span className="block text-primary pb-1">Zero Point Food?</span>
+                                <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} className="checkbox checkbox-primary" />
                             </label>
                         </div>
                         {/* Submit and Cancel Buttons */}

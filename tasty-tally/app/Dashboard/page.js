@@ -7,6 +7,7 @@ import {useState, useEffect} from "react";
 import { useRouter } from "next/navigation";
 import { useUserAuth } from "../_utils/auth-context";
 import { fetchDailyGoal, fetchDailyLog } from "../_utils/firestoreOperations";
+import { set } from "firebase/database";
 
 export default function Dashboard() {
     const [dailyFoodList, setDailyFoodList] = useState([]);
@@ -29,6 +30,7 @@ export default function Dashboard() {
           const logData = await fetchDailyLog(user.uid, selectedDate);
           setPointsUsed(logData.pointsUsed);
           setDailyFoodList(logData.foods);
+          setDailyGoal(logData.dailyGoal);
         };
       
         if (user) {
@@ -49,15 +51,15 @@ export default function Dashboard() {
     }, [dailyFoodList]);
 
     //fetch the daily goal when user logs in
-    useEffect(() => {
-      const fetchGoal = async () => {
-          const goal = await fetchDailyGoal(user.uid);
-          setDailyGoal(goal);
-      }
-      if (user) {
-          fetchGoal();
-      }
-    }, []);
+    // useEffect(() => {
+    //   const fetchGoal = async () => {
+    //       const goal = await fetchDailyGoal(user.uid);
+    //       setDailyGoal(goal);
+    //   }
+    //   if (user) {
+    //       fetchGoal();
+    //   }
+    // }, []);
 
 
     return (
@@ -66,7 +68,7 @@ export default function Dashboard() {
             <div className="flex justify-center">
                 <div className="w-10/12 lg:w-8/12 ">
                     <GetDate selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-                    <PointDisplay usedPoints={pointsUsed} dailyGoal={dailyGoal} weeklyRemaining={33} />
+                    <PointDisplay usedPoints={pointsUsed} dailyGoal={dailyGoal}/>
                     <ItemList
                         dailyFoodList={dailyFoodList}
                         setDailyFoodList={setDailyFoodList} 

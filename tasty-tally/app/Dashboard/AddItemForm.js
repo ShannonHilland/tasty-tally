@@ -14,7 +14,7 @@ export default function AddItemForm({food, setDailyFoodList, setQuery, selectedD
             const item = {
                 id: food.id,
                 name: food.name,
-                points: food.points * quantity,
+                points: Math.round(food.points * quantity),
                 calories: food.calories,
                 saturatedFat: food.saturatedFat,
                 sugar: food.sugar,
@@ -29,12 +29,16 @@ export default function AddItemForm({food, setDailyFoodList, setQuery, selectedD
                 const updatedList = [...prev, item];
                 return updatedList;
             });
+        } else {
+            alert(`You don't need to log it if you didn't eat it!\n(Quantity is zero)`);
         }
     }
     const handleQuantityChange = (e) => {
-        const value = Math.max(1, Number(e.target.value));
-        setQuantity(value);
-    }
+        const value = e.target.value;
+        if (value === "" || parseFloat(value) >= 0) {
+          setQuantity(value);
+        }
+      };
 
     const handleMealSelection = (e) => {
         setMealCategory(e.target.value);
@@ -58,10 +62,18 @@ export default function AddItemForm({food, setDailyFoodList, setQuery, selectedD
                 <p>Protein: {food.protein}</p>
                 <p>Serving Size: {food.servingSize}</p>
                 <form onSubmit={handleSubmit}>
-                    <div>
-                        <label htmlFor="quantity">Quantity:</label>
-                        <input type="number" min="1" name="quantity" value={quantity} onChange={handleQuantityChange} className="w-10 rounded-md m-1 p-1" required />
-                    </div>
+                <div>
+                    <label htmlFor="quantity">Quantity:</label>
+                    <input
+                      type="number"
+                      name="quantity"
+                      step="any"
+                      value={quantity}
+                      onChange={handleQuantityChange}
+                      className="w-12 rounded-md m-1 p-1"
+                      required
+                    />
+                </div>
                     <div className="flex justify-between">
                         <div className="flex items-center">
                             <label htmlFor="Meal">Meal:</label>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { doc, setDoc, getDoc } from "firebase/firestore"; // Added getDoc
 import { db } from "../_utils/firebase";
+import { set } from "firebase/database";
 
 export default function ProfileForm({ user }) {
   const [formData, setFormData] = useState({
@@ -11,9 +12,9 @@ export default function ProfileForm({ user }) {
     weight: "",
     activityLevel: "",
     goalWeight: "",
-    dailyGoal: "",
+    dailyGoal: ""
   });
-  const [pointGoal, setPointGoal] = useState(0);
+  const [pointGoal, setPointGoal] = useState("");
 
   // Fetch user profile data
   useEffect(() => {
@@ -24,8 +25,9 @@ export default function ProfileForm({ user }) {
           const data = userDoc.data();
           setFormData((prev) => ({
             ...prev,
-            ...data, // Populate form with data from Firestore
+            ...data,
           }));
+          setPointGoal(data.dailyGoal);
         }
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -36,7 +38,7 @@ export default function ProfileForm({ user }) {
   }, [user.uid]);
 
   const calculateDailyGoal = (weight, height, age, gender, activityLevel) => {
-    let base = weight / 4.2;
+    let base = (weight / 4.2) + 7;
     if (gender === "male") base += 8;
 
     switch (age) {
@@ -94,7 +96,7 @@ export default function ProfileForm({ user }) {
 
   return (
     <div className="m-5 md:m-2">
-      <h1 className="text-center text-primary text-3xl font-bold mb-8">
+      <h1 className="text-center text-3xl font-semibold mt-5 mb-6">
         {formData.firstName ? `${formData.firstName}'s Profile` : "Profile Setup"}
       </h1>
       
@@ -190,14 +192,14 @@ export default function ProfileForm({ user }) {
         <div className="mb-4">
           <div className="block text-md font-medium">Daily Goal: 
             <span className="text-primary text-md font-semibold pl-1">
-              {Math.round(pointGoal)}
+              {pointGoal}
             </span>
           </div>
         </div>
 
         <button
           type="submit"
-          className="w-full bg-primary text-white py-2 px-4 rounded my-2"
+          className="w-full bg-white border-2 border-primary text-primary py-2 px-4 rounded my-2 hover:bg-primary hover:text-white"
         >
           Save Profile
         </button>

@@ -22,10 +22,11 @@ export default function DailyItem({food, setDailyFoodList, selectedDate}) {
             <div className="collapse-content flex justify-between">
                 <div className="">
                     <p>Calories: {food.calories}</p>
-                    <p>Saturated Fat: {food.saturatedFat}</p>
-                    <p>Sugar: {food.sugar}</p>
-                    <p>Protein: {food.protein}</p>
-                    <p>Serving Size: {food.servingSize}</p>
+                    <p>Saturated Fat: {food.saturatedFat} g</p>
+                    <p>Sugar: {food.sugar} g</p>
+                    <p>Protein: {food.protein} g</p>
+                    <p>Serving Size: {food.servingSize} g</p>
+                    <p>Quantity: {food.quantity}</p>
                 </div>
                 <div className="flex items-end ml-7">
                         <button className=" text-white p-2 rounded-lg " onClick={handleDelete}>
