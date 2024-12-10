@@ -25,7 +25,7 @@ export default function DailyItem({food, setDailyFoodList, selectedDate}) {
                     <p>Saturated Fat: {food.saturatedFat} g</p>
                     <p>Sugar: {food.sugar} g</p>
                     <p>Protein: {food.protein} g</p>
-                    <p>Serving Size: {food.servingSize} g</p>
+                    <p>Serving Size: {food.servingSize}</p>
                     <p>Quantity: {food.quantity}</p>
                 </div>
                 <div className="flex items-end ml-7">

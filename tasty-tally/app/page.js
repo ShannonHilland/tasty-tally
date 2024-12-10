@@ -125,7 +125,7 @@ export default function SignInPage() {
         <h1 className="mb-2 text-primary font-semibold text-xl md:text-2xl">Welcome to Tasty Tally!</h1>
         <p className="mb-2">Tasty Tally is a free food tracking app that focuses on making healthy choices instead of tracking calories or eliminating foods from your diet.</p>
         <h2 className="mb-2 text-primary text-lg md:text-xl">How does it work?</h2>
-        <p className="mb-2">When you sign in initially, your profile will request information about you, such as height, weight, gender, age and activity level. It will then calculate
+        <p className="mb-2">When you sign in initially, your profile will request information about you, such as height, weight, gender and activity level. It will then calculate
            a customized daily point goal for you! Next you can head to the Dashboard to log the food you eat and see your tally throughout the day.
         </p>
         <h2 className="mb-2 text-primary text-lg md:text-xl">How are points calculated for food? (And why are some Zero Points?)</h2>
