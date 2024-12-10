@@ -1,6 +1,5 @@
 import "./globals.css";
 import { AuthContextProvider } from "./_utils/auth-context";
-import { saveUserData, logFood, addFoodItem } from "./_utils/firestoreOperations";
 
 export const metadata = {
   title: "Tasty Tally",

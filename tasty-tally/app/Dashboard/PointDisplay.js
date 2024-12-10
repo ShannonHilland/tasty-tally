@@ -5,7 +5,7 @@ export default function PointDisplay({usedPoints, dailyGoal}) {
 
     return (
         <div className="flex items-center justify-around w-full p-4 "> 
-            {/* Weekly Remaining Section */}
+            {/* Daily Goal Section */}
             <div className="flex flex-col items-center">
                 <p className="text-lg font-semibold">{dailyGoal}</p>
                 <p className="text-sm text-gray-600">Today&apos;s Goal</p>

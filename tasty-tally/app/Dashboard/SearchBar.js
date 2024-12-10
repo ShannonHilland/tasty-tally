@@ -31,7 +31,7 @@ export default function SearchBar({setDailyFoodList, openPopup, selectedDate}) {
     };
     
     const filteredItems = foodItems.filter((item) =>
-        item.name.toLowerCase().startsWith(query.toLowerCase())
+        item.name.toLowerCase().includes(query.toLowerCase())
       );
     
     return(

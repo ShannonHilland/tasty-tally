@@ -6,8 +6,8 @@ import GetDate from "./GetDate";
 import {useState, useEffect} from "react";
 import { useRouter } from "next/navigation";
 import { useUserAuth } from "../_utils/auth-context";
-import { fetchDailyGoal, fetchDailyLog } from "../_utils/firestoreOperations";
-import { set } from "firebase/database";
+import Footer from "../components/Footer";
+import { fetchDailyLog } from "../_utils/firestoreOperations";
 
 export default function Dashboard() {
     const [dailyFoodList, setDailyFoodList] = useState([]);
@@ -50,32 +50,23 @@ export default function Dashboard() {
       }
     }, [dailyFoodList]);
 
-    //fetch the daily goal when user logs in
-    // useEffect(() => {
-    //   const fetchGoal = async () => {
-    //       const goal = await fetchDailyGoal(user.uid);
-    //       setDailyGoal(goal);
-    //   }
-    //   if (user) {
-    //       fetchGoal();
-    //   }
-    // }, []);
-
-
     return (
-        <div>
-            <Navbar />
-            <div className="flex justify-center">
-                <div className="w-10/12 lg:w-8/12 ">
-                    <GetDate selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-                    <PointDisplay usedPoints={pointsUsed} dailyGoal={dailyGoal}/>
-                    <ItemList
-                        dailyFoodList={dailyFoodList}
-                        setDailyFoodList={setDailyFoodList} 
-                        selectedDate={selectedDate}
-                    />
+        <div className="flex flex-col min-h-screen">
+            <div className="flex-grow">
+                <Navbar />
+                <div className="flex justify-center">
+                    <div className="w-10/12 lg:w-8/12 ">
+                        <GetDate selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+                        <PointDisplay usedPoints={pointsUsed} dailyGoal={dailyGoal}/>
+                        <ItemList
+                            dailyFoodList={dailyFoodList}
+                            setDailyFoodList={setDailyFoodList} 
+                            selectedDate={selectedDate}
+                        />
+                    </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }

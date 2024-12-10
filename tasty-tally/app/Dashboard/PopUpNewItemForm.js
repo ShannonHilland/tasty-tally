@@ -148,7 +148,7 @@ export default function PopupForm({ closePopup }) {
                             />
                         </div>
                         {/* Zero Point Option */}
-                        <div class="mb-4">
+                        <div className="mb-4">
                             <label className="label cursor-pointer">
                                 <span className="block text-primary pb-1">Zero Point Food?</span>
                                 <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} className="checkbox checkbox-primary" />

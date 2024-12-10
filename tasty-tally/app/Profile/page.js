@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/Navbar";
 import ProfileForm from "./ProfileForm";
+import Footer from "../components/Footer";
 import { useUserAuth } from "../_utils/auth-context";
 
 export default function Profile() {
@@ -24,6 +25,7 @@ export default function Profile() {
         <div>
             <Navbar />
             <ProfileForm user={user} />
+            <Footer />
         </div>
     );
 }

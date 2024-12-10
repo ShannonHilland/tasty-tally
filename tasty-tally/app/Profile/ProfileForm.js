@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { doc, setDoc, getDoc } from "firebase/firestore"; // Added getDoc
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "../_utils/firebase";
-import { set } from "firebase/database";
 
 export default function ProfileForm({ user }) {
   const [formData, setFormData] = useState({

@@ -25,7 +25,7 @@ import PopupNewItemForm from './PopUpNewItemForm';
          const indexA = desiredOrder.indexOf(a);
          const indexB = desiredOrder.indexOf(b);
 
-         // Categories not in the desiredOrder should come last and be sorted alphabetically
+         // Categories not in the desiredOrder come last and be sorted alphabetically
          if (indexA === -1 && indexB === -1) return a.localeCompare(b);
          if (indexA === -1) return 1;
          if (indexB === -1) return -1;
@@ -38,23 +38,22 @@ import PopupNewItemForm from './PopUpNewItemForm';
       }, {});
 
       return (
-         <div className="m-4 p-2">   
-           <SearchBar setDailyFoodList={setDailyFoodList} openPopup={openPopup} selectedDate={selectedDate}/>
-           {isVisible && <PopupNewItemForm closePopup={closePopup} />}
-           {Object.entries(orderedCategorizedFood).map(([category, foods]) => ( 
-             <div key={category} className="category-section mb-6">
-               <h2 className="text-lg font-bold mb-2 capitalize">{category}</h2>
-               {foods.map((food) => ( 
-                 <DailyItem
-                   key={food.id}
-                   food={food}
-                   setDailyFoodList={setDailyFoodList}
-                   selectedDate={selectedDate}
-                 />
-               ))}
-             </div>
-           ))}
-         </div>
-       );
-       
+        <div className="m-4 p-2">   
+          <SearchBar setDailyFoodList={setDailyFoodList} openPopup={openPopup} selectedDate={selectedDate}/>
+          {isVisible && <PopupNewItemForm closePopup={closePopup} />}
+          {Object.entries(orderedCategorizedFood).map(([category, foods]) => ( 
+            <div key={category} className="category-section mb-6">
+              <h2 className="text-lg font-bold mb-2 capitalize">{category}</h2>
+              {foods.map((food) => ( 
+                <DailyItem
+                  key={food.id}
+                  food={food}
+                  setDailyFoodList={setDailyFoodList}
+                  selectedDate={selectedDate}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      );      
  }

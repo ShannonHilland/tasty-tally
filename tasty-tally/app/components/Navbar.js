@@ -37,6 +37,9 @@ export default function Navbar() {
                     <Link href="/Profile" className="btn btn-ghost">
                         Profile
                     </Link>
+                    <Link href="/About" className="btn btn-ghost">
+                        About
+                    </Link>
                     <button className="btn btn-ghost" onClick={handleSignOut}>Sign Out</button>
                 </div>
 
@@ -85,6 +88,11 @@ export default function Navbar() {
                                     <li>
                                         <Link href="/Profile" onClick={() => setIsMenuOpen(false)}>
                                             Profile
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/About" onClick={() => setIsMenuOpen(false)}>
+                                            About
                                         </Link>
                                     </li>
                                     <li>
